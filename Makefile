@@ -1,6 +1,14 @@
+qtd := 2
+namespace := default
+
+# MINIKUBE ===============================
 version:
 	# Pega a versão do kubectl
 	kubectl version --client
+
+info:
+	# Pega informações do cluster
+	kubectl cluster-info
 
 ip:
 	# Pegar o IP do cluster
@@ -18,6 +26,34 @@ status-cluster:
 	# Verifica o status do cluster
 	minikube status
 
+service-url:
+	# Pegar a URL do serviço disponibilizado
+	minikube service ${service} --url -n ${namespace}
+
+# COMANDOS IMPORTANTES ===============================
+
+create:
+	# Executa o arquivo .yaml e salva as revisoes
+	kubectl create -f ${file} --save-config --record
+
+all-info:
+	# Pega todas as informações do kubernetes.
+	kubectl get all -n ${namespace}
+
+scale:
+	# Adicionando mais pods no replicaset.
+	kubectl scale deployment/${name} --replicas=${qtd}
+
+apply:
+	# Usado para aplicar a atualização de algum dado já publicado do .yaml
+	kubectl apply -f ${file}
+
+exec:
+	# Entrar no bash do pod
+	kubectl exec -it ${pod} -- bash
+
+# PODs ====================================
+
 get-pods:
 	# Lista todos os pods do cluster.
 	kubectl get pods -o wide
@@ -30,19 +66,12 @@ delete-pod:
 	# Deletando um pod
 	kubectl delete pod ${pod}
 
-create:
-	# Executa o arquivo .yaml e salva as revisoes
-	kubectl create -f ${file} --save-config --record
+# REPLICASET ==============================
 
-all-info:
-	# Pega todas as informações do kubernetes.
-	kubectl get all
-
-replicaset:
+get-replicaset:
 	# Verifica se existe replicasets
 	kubectl get replicaset
 
-qtd := 2
 
 delete-replicaset:
 	# Deletar o replicaset
@@ -52,9 +81,7 @@ describe-replicaset:
 	# Verificar dados do replicaset.
 	kubectl describe replicaset ${name}
 
-scale:
-	# Adicionando mais pods no replicaset.
-	kubectl scale deployment/${name} --replicas=${qtd}
+# DEPLOYMENT ===============================
 
 get-deployment:
 	# Lista todos os deployments
@@ -68,10 +95,6 @@ describe-deployment:
 	# Descreve os dados do deployment
 	kubectl describe deployment ${name}
 
-apply:
-	# Usado para aplicar a atualização de algum dado já publicado do .yaml
-	kubectl apply -f ${file}
-
 rollout-status:
 	# Pega o status de atualização/rollback do deployment.
 	kubectl rollout status deployment/${name}
@@ -84,10 +107,34 @@ rollout-undo:
 	# Faz um roolback para uma versão anterior do deployment.
 	kubectl rollout undo deployment/${name} --to-revision=${revision}
 
-exec:
-	# Entrar no bash do pod
-	kubectl exec -it ${pod} -- bash
+# SERVICES ===================================
 
-service-url:
-	# Pegar a URL do serviço disponibilizado
-	minikube service ${service} --url
+get-services:
+	# Lista todos os serviços
+	kubectl get service ${name}
+
+delete-service:
+	# Deleta um serviço especifico
+	kubectl delete service ${name}
+
+describe-service:
+	# Descreve os dados do serviço
+	kubectl describe service ${name}
+
+# NAMESPACES ===========================
+
+get-namespaces:
+	# Pega a lista de namespaces
+	kubectl get namespaces
+
+create-namespace:
+	# Cria um namespace
+	kubectl create namespace ${name} --save-config --report
+
+delete-namespace:
+	# Deleta um namespace especifico
+	kubectl delete namespace ${name}
+
+describe-namespace:
+	# Descreve os dados do namespace
+	kubectl describe namespace ${name}
